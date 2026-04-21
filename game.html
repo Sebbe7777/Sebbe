@@ -150,19 +150,6 @@
     .btn-share { background: #3b82f6; }
     .btn-share:hover { background: #2563eb; }
 
-    #leaderboard {
-      margin-top: 10px;
-      width: 100%;
-      text-align: left;
-    }
-    .score-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #334155;
-      font-size: 14px;
-    }
-    
     #level-indicator {
       position: absolute;
       top: 20px;
@@ -188,13 +175,8 @@
         <div id="start-screen" class="screen">
           <h1>🐼 SUPER PANDA BROS</h1>
           <p>Undvik spikar & drakar. Nå målet!</p>
-          <input type="text" id="player-name-input" placeholder="Skriv ditt namn" maxlength="12">
           <button class="btn" id="start-btn">Starta Spelet</button>
-          
-          <div id="leaderboard">
-            <h3 style="margin: 10px 0; color:#cbd5e1;">🏆 Topplista (Global)</h3>
-            <div id="score-list-start">Laddar...</div>
-          </div>
+          <p class="blink" style="margin-top: 15px;">...eller tryck SPACE</p>
         </div>
 
         <!-- GAME OVER SCREEN -->
@@ -203,7 +185,6 @@
           <p id="final-score-lose"></p>
           <button class="btn" onclick="resetGame()">Spela Igen</button>
           <button class="btn btn-share" onclick="shareGame()">🔗 Dela Spel</button>
-          <div id="leaderboard-end" style="width:100%"></div>
         </div>
 
         <!-- WIN SCREEN -->
@@ -225,125 +206,16 @@
     <!-- Gemini AI Box -->
     <div id="ai-narrator">
       <h3>✨ Gemini Narrator</h3>
-      <p id="ai-text">Welcome. Enter your name above to begin your journey.</p>
+      <p id="ai-text">Välkommen! Tryck på start för att börja ditt äventyr.</p>
     </div>
   </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-// --- FIREBASE SETUP ---
-const firebaseConfig = JSON.parse(__firebase_config);
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-let currentUser = null;
-let playerName = "Anonym Panda";
-
-// --- AUTH INIT (FIXED) ---
-const initAuth = async () => {
-  try {
-    let userCredential;
-    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-      // Använd custom token om det finns (för behörigheter i miljön)
-      userCredential = await signInWithCustomToken(auth, __initial_auth_token);
-    } else {
-      // Annars fallback till anonym
-      userCredential = await signInAnonymously(auth);
-    }
-    currentUser = userCredential.user;
-    console.log("Logged in successfully:", currentUser.uid);
-    fetchLeaderboard('score-list-start');
-  } catch (error) {
-    console.error("Auth Error:", error);
-  }
-};
-
-initAuth();
-
+<script>
 // Starta spel
 document.getElementById('start-btn').addEventListener('click', () => {
-  const input = document.getElementById('player-name-input');
-  if (input.value.trim()) {
-    playerName = input.value.trim();
-  }
   document.getElementById('start-screen').classList.add('hidden');
   resetGame();
 });
-
-// --- SPARA POÄNG ---
-window.saveScore = async function() {
-  if (!currentUser) {
-    console.warn("Cannot save score: User not logged in.");
-    return;
-  }
-
-  try {
-    const scoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
-    await addDoc(scoresRef, {
-      name: playerName,
-      score: score,
-      level: currentLevel,
-      timestamp: Date.now()
-    });
-    // Uppdatera listor
-    fetchLeaderboard('leaderboard-end');
-  } catch (e) {
-    console.error("Error adding score: ", e);
-  }
-}
-
-// --- HÄMTA TOPPLISTA ---
-async function fetchLeaderboard(targetId) {
-  const listDiv = document.getElementById(targetId);
-  if(!listDiv) return;
-  
-  if (!currentUser) {
-     listDiv.innerHTML = "Väntar på inloggning...";
-     return;
-  }
-  
-  listDiv.innerHTML = "Laddar...";
-  
-  try {
-    const scoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
-    const snapshot = await getDocs(scoresRef);
-    
-    let scores = [];
-    snapshot.forEach(doc => {
-      scores.push(doc.data());
-    });
-
-    scores.sort((a, b) => b.score - a.score);
-    scores = scores.slice(0, 5);
-
-    if (scores.length === 0) {
-      listDiv.innerHTML = "<p style='font-size:14px; color:#64748b'>Inga poäng än. Bli den första!</p>";
-      return;
-    }
-
-    listDiv.innerHTML = scores.map((s, i) => `
-      <div class="score-row">
-        <span>${i+1}. ${s.name}</span>
-        <span style="color:#facc15; font-weight:bold;">${s.score}p</span>
-      </div>
-    `).join('');
-
-    // Om vi visar "Game Over" listan, kopiera till "leaderboard-end" om det behövs
-    if(targetId === 'score-list-start') {
-        const endDiv = document.getElementById('leaderboard-end');
-        if(endDiv) endDiv.innerHTML = listDiv.innerHTML;
-    }
-
-  } catch (e) {
-    console.error("Error fetching scores:", e);
-    listDiv.innerHTML = "Kunde inte ladda listan (Behörighetsfel).";
-  }
-}
 
 // --- DELA FUNKTION ---
 window.shareGame = function() {
@@ -463,7 +335,7 @@ function loadLevel(lvl) {
   levelIndicator.innerText = `${lvl}. ${theme.name}`;
   levelIndicator.style.color = theme.type === 'space' || theme.type === 'boss' ? '#fff' : '#1e293b';
 
-  generateNarratorText(`Intro for Level ${lvl}: ${theme.name}. Good luck ${playerName}!`);
+  generateNarratorText(`Intro for Level ${lvl}: ${theme.name}. Give a short, witty encouragement.`);
 
   worldWidth = 2600 + lvl * 400; 
 
@@ -552,11 +424,9 @@ function setGameState(state) {
   } else if (state === 'GAMEOVER') {
     uiGameOver.classList.remove('hidden');
     scoreLose.innerText = `Poäng: ${score}`;
-    saveScore(); // Spara automatiskt
   } else if (state === 'WIN') {
     uiWin.classList.remove('hidden');
     scoreWin.innerText = `Poäng: ${score}`;
-    saveScore(); // Spara automatiskt
     generateNarratorText("Congratulate the player for beating the entire game.");
   } else if (state === 'LEVEL_TRANSITION') {
     uiLevel.classList.remove('hidden');
@@ -800,7 +670,10 @@ window.addEventListener('keydown', e => {
   keys[e.key] = true;
 
   if (e.key === ' ' || e.key === 'Enter') {
-    if (gameState === 'GAMEOVER' || gameState === 'WIN') {
+    if (gameState === 'MENU' || gameState === 'GAMEOVER' || gameState === 'WIN') {
+      if (gameState === 'MENU') {
+        document.getElementById('start-screen').classList.add('hidden');
+      }
       resetGame();
     }
   }
