@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="sv" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sebastian Mikula - Portfölj</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background: #020617;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        nav a {
+            color: var(--accent);
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        section {
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1, h2, h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* SPEL DESIGN */
+        .game-container {
+            text-align: center;
+        }
+
+        canvas {
+            background: #000;
+            display: block;
+            margin: 20px auto;
+            border-radius: 12px;
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #334155;
+            touch-action: none;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: #334155;
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .btn:active {
+            background: var(--accent);
+        }
+
+        .btn-up { grid-column: 2; }
+        .btn-left { grid-column: 1; }
+        .btn-down { grid-column: 2; }
+        .btn-right { grid-column: 3; }
+
+        ul {
+            list-style-position: inside;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: #020617;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Hej! Jag heter Sebastian Mikula</h1>
+        <nav>
+            <a href="#about">Om mig</a>
+            <a href="#project">Gymnasiearbete</a>
+            <a href="#game">Mitt spel</a>
+            <a href="#cv">CV</a>
+        </nav>
+    </div>
+</header>
+
+<section id="about">
+    <div class="card">
+        <h2>Om mig</h2>
+        <p>Jag heter Sebastian Mikula och går gymnasiet. Jag har ett stort intresse för teknik, programmering och spelutveckling.</p>
+    </div>
+</section>
+
+<section id="project">
+    <div class="card">
+        <h2>Gymnasiearbete</h2>
+        <p>Mitt gymnasiearbete handlar om att skapa ett spel och en hemsida där jag visar mina kunskaper inom programmering och webbdesign.</p>
+    </div>
+</section>
+
+<section id="game">
+    <div class="card game-container">
+        <h2>Mitt spel 🎮</h2>
+        <p>Undvik den röda fienden! Använd piltangenterna eller knapparna nedan.</p>
+
+        <canvas id="gameCanvas" width="500" height="300"></canvas>
+
+        <!-- Touch-kontroller för mobil -->
+        <div class="controls">
+            <button class="btn btn-up" id="up">↑</button>
+            <button class="btn btn-left" id="left">←</button>
+            <button class="btn btn-down" id="down">↓</button>
+            <button class="btn btn-right" id="right">→</button>
+        </div>
+    </div>
+</section>
+
+<section id="cv">
+    <div class="card">
+        <h2>CV</h2>
+        <p><strong>Namn:</strong> Sebastian Mikula</p>
+        
+        <h3>Utbildning</h3>
+        <p>Gymnasieutbildning (pågående)</p>
+
+        <h3>Färdigheter</h3>
+        <ul>
+            <li>HTML & CSS</li>
+            <li>JavaScript (Canvas API, Spelmotor-logik)</li>
+            <li>Spelutveckling</li>
+        </ul>
+
+        <h3>Språk</h3>
+        <ul>
+            <li>Svenska (Modersmål)</li>
+            <li>Engelska (Flytande)</li>
+        </ul>
+
+        <h3>Kontakt</h3>
+        <p>Email: dinmail@email.com</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 Sebastian Mikula</p>
+</footer>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let player = { x: 50, y: 130, size: 20, speed: 4 };
+    let enemy = { x: 450, y: 130, size: 20, speed: 3 };
+    let score = 0;
+    let gameOver = false;
+
+    let keys = {};
+
+    // Tangentbordslyssnare
+    document.addEventListener("keydown", e => keys[e.key] = true);
+    document.addEventListener("keyup", e => keys[e.key] = false);
+
+    // Mobil-kontroller
+    const setupMobileBtn = (id, key) => {
+        const btn = document.getElementById(id);
+        btn.addEventListener("mousedown", () => keys[key] = true);
+        btn.addEventListener("mouseup", () => keys[key] = false);
+        btn.addEventListener("touchstart", (e) => { e.preventDefault(); keys[key] = true; });
+        btn.addEventListener("touchend", (e) => { e.preventDefault(); keys[key] = false; });
+    };
+
+    setupMobileBtn("up", "ArrowUp");
+    setupMobileBtn("down", "ArrowDown");
+    setupMobileBtn("left", "ArrowLeft");
+    setupMobileBtn("right", "ArrowRight");
+
+    function resetGame() {
+        player.x = 50;
+        player.y = 130;
+        enemy.x = 500;
+        score = 0;
+        gameOver = false;
+    }
+
+    function update() {
+        if (gameOver) {
+            if (keys["Enter"] || keys[" "]) resetGame();
+            return;
+        }
+
+        // Rörelse spelare
+        if (keys["ArrowUp"] && player.y > 0) player.y -= player.speed;
+        if (keys["ArrowDown"] && player.y < canvas.height - player.size) player.y += player.speed;
+        if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+        if (keys["ArrowRight"] && player.x < canvas.width - player.size) player.x += player.speed;
+
+        // Rörelse fiende
+        enemy.x -= enemy.speed;
+        if (enemy.x < -enemy.size) {
+            enemy.x = canvas.width;
+            enemy.y = Math.random() * (canvas.height - enemy.size);
+            score++;
+            // Öka svårighetsgrad långsamt
+            enemy.speed += 0.1;
+        }
+
+        // Kollision
+        if (
+            player.x < enemy.x + enemy.size &&
+            player.x + player.size > enemy.x &&
+            player.y < enemy.y + enemy.size &&
+            player.y + player.size > enemy.y
+        ) {
+            gameOver = true;
+            enemy.speed = 3; // Återställ fart
+        }
+    }
+
+    function draw() {
+        // Rensa skärm
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Rita spelare
+        ctx.fillStyle = "#38bdf8";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#38bdf8";
+        ctx.fillRect(player.x, player.y, player.size, player.size);
+
+        // Rita fiende
+        ctx.fillStyle = "#ef4444";
+        ctx.shadowColor = "#ef4444";
+        ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+        
+        // Återställ skugga
+        ctx.shadowBlur = 0;
+
+        // Rita poäng
+        ctx.fillStyle = "white";
+        ctx.font = "16px sans-serif";
+        ctx.fillText(`Poäng: ${score}`, 10, 25);
+
+        if (gameOver) {
+            ctx.fillStyle = "rgba(0,0,0,0.7)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.font = "30px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+            ctx.font = "16px sans-serif";
+            ctx.fillText("Tryck Mellanslag eller Enter för att starta om", canvas.width / 2, canvas.height / 2 + 40);
+            ctx.textAlign = "left";
+        }
+    }
+
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+
+    // Starta spelet när fönstret laddats
+    window.onload = gameLoop;
+</script>
+
+</body>
+</html>
