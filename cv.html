@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sebastian Mikula - CV</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #38bdf8;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .cv-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 32px;
+        }
+
+        .contact-info {
+            text-align: right;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 18px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .experience-item {
+            margin-bottom: 20px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .item-sub {
+            color: var(--accent);
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 3px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .cv-container { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+            .back-link { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cv-container">
+        <a href="index.html" class="back-link">← Tillbaka till Portfolio</a>
+        
+        <header>
+            <div>
+                <h1>Sebastian Mikula</h1>
+                <p>VVS-montör under utbildning</p>
+            </div>
+            <div class="contact-info">
+                <p>📍 Malmö</p>
+                <p>📞 076 712 89 50</p>
+                <p>📧 sebastian21250@gmail.com</p>
+            </div>
+        </header>
+
+        <section>
+            <h2>Profil</h2>
+            <p>Jag är en motiverad och ansvarstagande gymnasieelev som studerar till VVS‑montör. Jag har erfarenhet från både restaurangarbete och praktik inom VVS‑branschen, där jag har utvecklat god samarbetsförmåga och arbetsdisciplin. Jag trivs i team, arbetar noggrant och är alltid redo att lära mig nya saker och utvecklas i arbetslivet.</p>
+        </section>
+
+        <section>
+            <h2>Arbetslivserfarenhet</h2>
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span>Burger King</span>
+                    <span>2025</span>
+                </div>
+                <div class="item-sub">Medarbetare</div>
+                <ul>
+                    <li>Arbetade i team i en stressig miljö</li>
+                    <li>Hjälpte till med kundservice och restaurangarbete</li>
+                    <li>Lärde mig samarbeta och arbeta effektivt</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="item-header">
+                    <span>Ahlsell</span>
+                    <span>2024 – 2025</span>
+                </div>
+                <div class="item-sub">APL / Praktik</div>
+                <ul>
+                    <li>Praktik inom lager och VVS-relaterade produkter</li>
+                    <li>Hjälpte till med varuhantering och order</li>
+                    <li>Fick erfarenhet av arbetsplatsrutiner och teamwork</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="item-header">
+                    <span>Rybergs Rör</span>
+                    <span>2025 – 2026</span>
+                </div>
+                <div class="item-sub">APL / Praktik</div>
+                <ul>
+                    <li>Praktik inom VVS, rördragning och montering av radiatorer</li>
+                    <li>Fick praktisk kunskap om VVS-arbete och arbetsrutiner</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Utbildning</h2>
+            <div class="experience-item">
+                <div class="item-header">
+                    <span>VVS-programmet</span>
+                    <span>Pågående</span>
+                </div>
+                <div class="item-sub">Gymnasieutbildning</div>
+            </div>
+        </section>
+
+        <section style="display: grid; grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Språk</h2>
+                <ul>
+                    <li>Svenska (Flytande)</li>
+                    <li>Engelska (Bra kunskaper)</li>
+                </ul>
+            </div>
+            <div>
+                <h2>Övriga meriter</h2>
+                <ul>
+                    <li>B-körkort</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>
