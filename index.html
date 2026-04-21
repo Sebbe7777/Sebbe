@@ -6,25 +6,22 @@
     <title>Sebastian Mikula - Portfölj</title>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
+            --bg-dark: #020617;
+            --bg-card: #0f172a;
             --accent: #38bdf8;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --success: #22c55e;
+            --indigo: #6366f1;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         header {
@@ -53,290 +50,249 @@
             color: white;
         }
 
-        section {
-            padding: 80px 20px;
-            max-width: 900px;
-            margin: auto;
-        }
+        section { padding: 60px 20px; max-width: 1000px; margin: auto; }
 
-        h1, h2, h3 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
+        h1, h2 { color: var(--accent); margin-bottom: 1rem; }
 
         .card {
             background: var(--bg-card);
             padding: 30px;
             border-radius: 16px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
-        /* Länkar och knappar */
         .btn-link {
             display: inline-block;
             background: var(--accent);
             color: var(--bg-dark);
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
             margin-top: 15px;
-            transition: transform 0.2s, background 0.2s;
+            transition: all 0.2s;
         }
 
         .btn-link:hover {
             transform: scale(1.05);
             background: white;
+            box-shadow: 0 0 15px var(--accent);
         }
 
-        /* SPEL DESIGN */
-        .game-container {
-            text-align: center;
-        }
+        /* SPEL-INTEGRERING STILAR */
+        #game-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
+        #game-container { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #334155; width: 800px; max-width: 100%; }
+        canvas { background: #0f172a; display: block; width: 100%; height: auto; }
+        #ai-narrator { width: 100%; max-width: 800px; min-height: 70px; background: #1e293b; border: 2px solid var(--indigo); border-radius: 12px; padding: 15px; }
+        #ai-text { margin: 0; font-size: 16px; color: #e2e8f0; font-style: italic; }
+        #ui-layer { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+        .screen { background: rgba(2, 6, 23, 0.98); padding: 30px; border-radius: 16px; pointer-events: auto; display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 280px; }
+        .hidden { display: none !important; }
+        .btn-game-ui { background: #22c55e; border: none; padding: 12px 24px; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; transition: opacity 0.2s; }
+        .btn-game-ui:hover { opacity: 0.9; }
+        input[type="text"] { padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: white; width: 100%; text-align: center; }
+        #level-indicator { position: absolute; top: 15px; right: 15px; font-size: 20px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; pointer-events: none; }
+        .score-row { display: flex; justify-content: space-between; width: 100%; padding: 5px 0; border-bottom: 1px solid #334155; }
+        footer { text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); }
 
-        canvas {
-            background: #000;
-            display: block;
-            margin: 20px auto;
-            border-radius: 12px;
-            max-width: 100%;
-            height: auto;
-            border: 2px solid #334155;
-            touch-action: none;
-        }
-
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(3, 60px);
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .btn-game {
-            background: #334155;
-            border: none;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .btn-game:active {
-            background: var(--accent);
-        }
-
-        .btn-up { grid-column: 2; }
-        .btn-left { grid-column: 1; }
-        .btn-down { grid-column: 2; }
-        .btn-right { grid-column: 3; }
-
-        ul {
-            list-style-position: inside;
-            margin-top: 10px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            background: #020617;
-            color: var(--text-muted);
-        }
+        @media (max-width: 850px) { #game-container { width: 95vw; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="container">
-        <h1>Sebastian Mikula</h1>
-        <nav>
-            <a href="#about">Om mig</a>
-            <a href="#project">Gymnasiearbete</a>
-            <a href="#game">Spelet</a>
-            <a href="#cv">Mitt CV</a>
-        </nav>
-    </div>
+    <h1>Sebastian Mikula</h1>
+    <nav>
+        <a href="#about">Om mig</a>
+        <a href="#game">Spelet</a>
+        <a href="cv.html">Mitt CV</a>
+    </nav>
 </header>
 
 <main>
-    <!-- Om mig Sektion -->
     <section id="about">
         <div class="card">
             <h2>Om mig</h2>
-            <p>Jag heter Sebastian Mikula och går gymnasiet. Jag har ett stort intresse för teknik, programmering och spelutveckling. Denna webbplats fungerar som min portfolio för att visa upp vad jag lär mig.</p>
+            <p>Jag är en motiverad och ansvarstagande gymnasieelev som studerar till VVS‑montör. Jag brinner för teknik, problemlösning och utveckling.</p>
+            <p style="margin-top: 10px;">Mitt CV finns nu på en separat sida för bättre översikt.</p>
+            <a href="cv.html" class="btn-link">Läs mitt CV här</a>
         </div>
     </section>
 
-    <!-- Gymnasiearbete Sektion -->
-    <section id="project">
-        <div class="card">
-            <h2>Gymnasiearbete</h2>
-            <p>Mitt gymnasiearbete handlar om att skapa ett spel och en hemsida där jag visar mina kunskaper inom programmering och webbdesign.</p>
-            <p>Här kan du läsa mer om projektets dokumentation och process:</p>
-            <a href="https://github.com/DITT-ANVANDARNAMN/DITT-REPO" class="btn-link" target="_blank">Visa projekt på GitHub →</a>
-        </div>
-    </section>
-
-    <!-- Spel Sektion -->
+    <!-- SPEL SEKTION -->
     <section id="game">
-        <div class="card game-container">
-            <h2>Mitt spel 🎮</h2>
-            <p>Undvik den röda fienden! Använd piltangenterna eller knapparna nedan.</p>
-
-            <canvas id="gameCanvas" width="500" height="300"></canvas>
-
-            <div class="controls">
-                <button class="btn-game btn-up" id="up">↑</button>
-                <button class="btn-game btn-left" id="left">←</button>
-                <button class="btn-game btn-down" id="down">↓</button>
-                <button class="btn-game btn-right" id="right">→</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- CV Sektion -->
-    <section id="cv">
         <div class="card">
-            <h2>CV</h2>
-            <p><strong>Namn:</strong> Sebastian Mikula</p>
-            
-            <h3>Utbildning</h3>
-            <p>Gymnasieutbildning (pågående) - Teknikprogrammet</p>
-
-            <h3>Färdigheter</h3>
-            <ul>
-                <li>HTML & CSS</li>
-                <li>JavaScript (Canvas API)</li>
-                <li>Spelutveckling</li>
-            </ul>
-
-            <br>
-            <p>Vill du ladda ner en PDF-version av mitt CV?</p>
-            <!-- Ersätt '#' med länken till din PDF-fil på GitHub om du har en -->
-            <a href="#" class="btn-link">Ladda ner CV (PDF)</a>
-
-            <h3 style="margin-top: 20px;">Kontakt</h3>
-            <p>Email: dinmail@email.com</p>
+            <h2 style="text-align: center;">Spelet: Super Panda Bros</h2>
+            <div id="game-wrapper">
+                <div id="game-container">
+                    <canvas id="gameCanvas" width="800" height="400"></canvas>
+                    <div id="level-indicator">NIVÅ 1</div>
+                    <div id="ui-layer">
+                        <div id="start-screen" class="screen">
+                            <h2 style="color: #facc15; font-size: 32px;">PANDA BROS</h2>
+                            <input type="text" id="player-name-input" placeholder="Skriv ditt namn" maxlength="12">
+                            <button class="btn-game-ui" id="start-btn">Starta Spelet</button>
+                            <div id="score-list-start" style="width: 100%; margin-top: 10px; font-size: 14px;">Laddar topplista...</div>
+                        </div>
+                        <div id="game-over-screen" class="screen hidden">
+                            <h2 style="color: #ef4444; font-size: 28px;">GAME OVER</h2>
+                            <button class="btn-game-ui" onclick="resetGame()">Försök Igen</button>
+                            <div id="leaderboard-end" style="width:100%; margin-top: 10px;"></div>
+                        </div>
+                        <div id="win-screen" class="screen hidden">
+                            <h2 style="color: #22c55e; font-size: 28px;">VINST!</h2>
+                            <button class="btn-game-ui" onclick="resetGame()">Spela Igen</button>
+                        </div>
+                        <div id="level-screen" class="hidden">
+                            <h2 style="color: #38bdf8; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 12px;">NÄSTA NIVÅ...</h2>
+                        </div>
+                    </div>
+                </div>
+                <div id="ai-narrator">
+                    <p id="ai-text">Lycka till, Sebastian!</p>
+                </div>
+            </div>
         </div>
     </section>
 </main>
 
 <footer>
-    <p>&copy; 2026 Sebastian Mikula | Skapad med HTML, CSS och JavaScript</p>
+    <p>&copy; 2026 Sebastian Mikula</p>
 </footer>
 
-<script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-    let player = { x: 50, y: 130, size: 20, speed: 4 };
-    let enemy = { x: 450, y: 130, size: 20, speed: 3 };
-    let score = 0;
-    let gameOver = false;
+const firebaseConfig = JSON.parse(__firebase_config);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-    let keys = {};
+const apiKey = ""; 
+let currentUser = null;
+let playerName = "Panda";
+let score = 0;
+let currentLevel = 1;
 
-    document.addEventListener("keydown", e => keys[e.key] = true);
-    document.addEventListener("keyup", e => keys[e.key] = false);
-
-    const setupMobileBtn = (id, key) => {
-        const btn = document.getElementById(id);
-        btn.addEventListener("mousedown", () => keys[key] = true);
-        btn.addEventListener("mouseup", () => keys[key] = false);
-        btn.addEventListener("touchstart", (e) => { e.preventDefault(); keys[key] = true; });
-        btn.addEventListener("touchend", (e) => { e.preventDefault(); keys[key] = false; });
-    };
-
-    setupMobileBtn("up", "ArrowUp");
-    setupMobileBtn("down", "ArrowDown");
-    setupMobileBtn("left", "ArrowLeft");
-    setupMobileBtn("right", "ArrowRight");
-
-    function resetGame() {
-        player.x = 50;
-        player.y = 130;
-        enemy.x = 500;
-        score = 0;
-        gameOver = false;
-        enemy.speed = 3;
+// Firebase Init
+const initAuth = async () => {
+    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        await signInWithCustomToken(auth, __initial_auth_token);
+    } else {
+        await signInAnonymously(auth);
     }
+};
+initAuth();
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if(user) fetchLeaderboard('score-list-start');
+});
 
-    function update() {
-        if (gameOver) {
-            if (keys["Enter"] || keys[" "]) resetGame();
-            return;
-        }
+async function saveScore() {
+    if (!currentUser) return;
+    try {
+        const scoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
+        await addDoc(scoresRef, { name: playerName, score: score, timestamp: Date.now() });
+        fetchLeaderboard('leaderboard-end');
+    } catch (e) { console.error(e); }
+}
 
-        if (keys["ArrowUp"] && player.y > 0) player.y -= player.speed;
-        if (keys["ArrowDown"] && player.y < canvas.height - player.size) player.y += player.speed;
-        if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
-        if (keys["ArrowRight"] && player.x < canvas.width - player.size) player.x += player.speed;
+async function fetchLeaderboard(targetId) {
+    const listDiv = document.getElementById(targetId);
+    if(!listDiv || !currentUser) return;
+    try {
+        const scoresRef = collection(db, 'artifacts', appId, 'public', 'data', 'scores');
+        const snap = await getDocs(scoresRef);
+        let entries = [];
+        snap.forEach(d => entries.push(d.data()));
+        entries.sort((a,b) => b.score - a.score);
+        entries = entries.slice(0, 5);
+        listDiv.innerHTML = entries.map((s, i) => `
+            <div class="score-row"><span>${i+1}. ${s.name}</span><strong>${s.score}</strong></div>
+        `).join('') || "Inga poäng än!";
+    } catch(e) { console.error(e); }
+}
 
-        enemy.x -= enemy.speed;
-        if (enemy.x < -enemy.size) {
-            enemy.x = canvas.width;
-            enemy.y = Math.random() * (canvas.height - enemy.size);
-            score++;
-            enemy.speed += 0.15;
-        }
+// Spel-motor
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let gameState = 'MENU';
+let keys = {};
+const gravity = 0.6;
+let panda = { x: 50, y: 320, w: 40, h: 40, vx: 0, vy: 0, onGround: false };
+let platforms = [], spikes = [], coins = [], fires = [], dragon = {}, goal = {};
+let cameraX = 0;
+let worldWidth = 3000;
 
-        if (
-            player.x < enemy.x + enemy.size &&
-            player.x + player.size > enemy.x &&
-            player.y < enemy.y + enemy.size &&
-            player.y + player.size > enemy.y
-        ) {
-            gameOver = true;
-        }
+function loadLevel(lvl) {
+    panda.x = 50; panda.y = 0; panda.vx = 0; panda.vy = 0; cameraX = 0; fires = [];
+    document.getElementById('level-indicator').innerText = `NIVÅ ${lvl}`;
+    worldWidth = 2000 + (lvl * 500);
+    platforms = []; spikes = []; coins = [];
+    for(let i=0; i<10; i++) platforms.push({x: 300 + i*350, y: 300 - (i%4)*40, w: 140, h: 20});
+    for(let i=0; i<5; i++) spikes.push({x: 600 + i*500, y: 340, w: 40, h: 20});
+    dragon = { x: worldWidth - 600, y: 200, w: 80, h: 80, timer: 0 };
+    goal = { x: worldWidth - 100, y: 280, w: 40, h: 80 };
+}
+
+window.resetGame = function() { score = 0; currentLevel = 1; loadLevel(1); setGameState('PLAYING'); }
+document.getElementById('start-btn').onclick = () => {
+    playerName = document.getElementById('player-name-input').value || "Panda";
+    resetGame();
+};
+
+function setGameState(s) {
+    gameState = s;
+    document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
+    if(s==='GAMEOVER') {
+        document.getElementById('game-over-screen').classList.remove('hidden');
+        saveScore();
+    } else if(s==='WIN') {
+        document.getElementById('win-screen').classList.remove('hidden');
+        saveScore();
     }
+}
 
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Player
-        ctx.fillStyle = "#38bdf8";
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = "#38bdf8";
-        ctx.fillRect(player.x, player.y, player.size, player.size);
-
-        // Enemy
-        ctx.fillStyle = "#ef4444";
-        ctx.shadowColor = "#ef4444";
-        ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
-        
-        ctx.shadowBlur = 0;
-
-        // UI
-        ctx.fillStyle = "white";
-        ctx.font = "bold 16px sans-serif";
-        ctx.fillText(`Poäng: ${score}`, 20, 30);
-
-        if (gameOver) {
-            ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            ctx.font = "bold 30px sans-serif";
-            ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 10);
-            ctx.font = "16px sans-serif";
-            ctx.fillText(`Din poäng: ${score}`, canvas.width / 2, canvas.height / 2 + 30);
-            ctx.fillStyle = var(--accent);
-            ctx.fillText("Tryck MELLANSLAG för att köra igen", canvas.width / 2, canvas.height / 2 + 60);
-            ctx.textAlign = "left";
+function update() {
+    if(gameState !== 'PLAYING') return;
+    if(keys['ArrowRight']) panda.vx = 6; else if(keys['ArrowLeft']) panda.vx = -6; else panda.vx = 0;
+    if(keys[' '] && panda.onGround) { panda.vy = -14; panda.onGround = false; }
+    panda.vy += gravity; panda.x += panda.vx; panda.y += panda.vy;
+    if(panda.y > 360 - panda.h) { panda.y = 360 - panda.h; panda.vy = 0; panda.onGround = true; }
+    platforms.forEach(p => {
+        if(panda.vy > 0 && panda.x + panda.w > p.x && panda.x < p.x + p.w && panda.y + panda.h <= p.y + 10 && panda.y + panda.h + panda.vy >= p.y) {
+            panda.y = p.y - panda.h; panda.vy = 0; panda.onGround = true;
         }
-    }
+    });
+    spikes.forEach(s => {
+        if(panda.x+panda.w > s.x+5 && panda.x < s.x+s.w-5 && panda.y+panda.h > s.y+5) setGameState('GAMEOVER');
+    });
+    cameraX += (Math.max(0, Math.min(panda.x - 350, worldWidth - 800)) - cameraX) * 0.1;
+    if(panda.x + panda.w > goal.x) setGameState('WIN');
+}
 
-    function gameLoop() {
-        update();
-        draw();
-        requestAnimationFrame(gameLoop);
-    }
+function draw() {
+    ctx.fillStyle = "#0f172a"; ctx.fillRect(0,0,800,400);
+    ctx.save(); ctx.translate(-cameraX, 0);
+    ctx.fillStyle = "#1e293b"; ctx.fillRect(0, 360, worldWidth, 40);
+    platforms.forEach(p => { ctx.fillStyle = '#64748b'; ctx.fillRect(p.x, p.y, p.w, p.h); });
+    ctx.fillStyle = '#ef4444'; 
+    spikes.forEach(s => { ctx.beginPath(); ctx.moveTo(s.x, s.y+s.h); ctx.lineTo(s.x+20, s.y); ctx.lineTo(s.x+40, s.y+s.h); ctx.fill(); });
+    ctx.font = "30px Arial";
+    ctx.fillText('🏁', goal.x, goal.y+40);
+    ctx.fillText('🐼', panda.x, panda.y+40);
+    ctx.restore();
+}
 
-    window.onload = gameLoop;
+function loop() { update(); draw(); requestAnimationFrame(loop); }
+window.onkeydown = e => keys[e.key] = true;
+window.onkeyup = e => keys[e.key] = false;
+loop();
 </script>
-
 </body>
 </html>
