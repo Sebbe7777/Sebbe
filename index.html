@@ -12,6 +12,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --success: #22c55e;
+            --warning: #facc15;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,9 +22,6 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
 
         header {
@@ -37,99 +35,106 @@
             backdrop-filter: blur(8px);
         }
 
-        nav {
-            margin-top: 15px;
-        }
-
+        nav { margin-top: 15px; }
         nav a {
             color: var(--accent);
-            margin: 0 15px;
+            margin: 0 10px;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.2s;
-            padding: 8px 16px;
+            padding: 8px 12px;
             border-radius: 6px;
-            border: 1px solid transparent;
+            font-size: 0.95rem;
         }
-
-        nav a:hover {
-            border-color: var(--accent);
-            background: rgba(56, 189, 248, 0.1);
-        }
+        nav a:hover { background: rgba(56, 189, 248, 0.1); }
 
         main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             padding: 40px 20px;
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
         }
 
-        .hero-card {
+        .section-card {
             background: var(--bg-card);
-            padding: 40px;
+            padding: 30px;
             border-radius: 24px;
-            text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; color: white; }
-        .subtitle { color: var(--accent); font-size: 1.2rem; margin-bottom: 30px; font-weight: 500; }
+        h1 { font-size: 2.5rem; color: white; margin-bottom: 10px; }
+        h2 { color: var(--accent); margin-bottom: 1.5rem; font-size: 1.8rem; }
         
-        p { color: var(--text-muted); margin-bottom: 25px; font-size: 1.1rem; }
+        .hero { text-align: center; padding: 40px 0; }
+        .subtitle { color: var(--accent); font-size: 1.2rem; margin-bottom: 20px; }
 
+        /* VVS SEKTION */
+        .vvs-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .vvs-text { font-size: 1.05rem; }
+        
+        .vvs-image-box {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .vvs-image-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .step-item {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .step-item strong { color: white; display: block; margin-bottom: 5px; }
+
+        /* KNAPPAR */
         .button-group {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             justify-content: center;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 32px;
-            border-radius: 12px;
+            padding: 12px 24px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            min-width: 200px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--bg-dark);
-        }
-
-        .btn-secondary {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px -10px currentColor;
-            filter: brightness(1.1);
-        }
-
-        footer {
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
-        /* Enkel animation för intryck */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .btn-primary { background: var(--accent); color: var(--bg-dark); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: var(--bg-dark); }
+
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); opacity: 0.9; }
+
+        footer { text-align: center; padding: 50px; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); }
+
+        @media (max-width: 768px) {
+            .vvs-container { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+            .button-group { flex-direction: column; }
+            .btn { width: 100%; }
         }
-        .hero-card { animation: fadeIn 0.8s ease-out; }
     </style>
 </head>
 <body>
@@ -139,31 +144,58 @@
     <nav>
         <a href="index.html">Hem</a>
         <a href="cv.html">Mitt CV</a>
+        <a href="gymnasiearbete.html">Gymnasiearbete</a>
         <a href="game.html">Spelet</a>
     </nav>
 </header>
 
 <main>
-    <div class="hero-card">
-        <div style="font-size: 3rem; margin-bottom: 10px;">👋</div>
-        <h1>Välkommen till min Portfölj</h1>
-        <p class="subtitle">VVS-student & Teknikentusiast</p>
-        
-        <p>
-            Jag studerar VVS-programmet och brinner för praktisk problemlösning, 
-            oavsett om det handlar om rördragning eller programmering. 
-            Här kan du utforska mitt CV eller prova mitt gymnasieprojekt – ett arkadspel!
+    <!-- HERO SEKTION -->
+    <div class="hero">
+        <p class="subtitle">VVS-student & Framtida Montör</p>
+        <p style="max-width: 600px; margin: 0 auto 30px auto; color: var(--text-muted);">
+            Välkommen till min portfolio. Här kan du läsa om mitt gymnasiearbete inom VVS-teknik, 
+            se mina meriter eller prova på mitt egenutvecklade spel.
         </p>
-
         <div class="button-group">
-            <a href="cv.html" class="btn btn-primary">
-                📄 Visa Mitt CV
-            </a>
-            <a href="game.html" class="btn btn-secondary">
-                🎮 Spela Super Panda Bros
-            </a>
+            <a href="cv.html" class="btn btn-primary">📄 Visa Mitt CV</a>
+            <a href="gymnasiearbete.html" class="btn btn-warning">🛠️ Gymnasiearbete</a>
+            <a href="game.html" class="btn btn-success">🎮 Spela Super Panda Bros</a>
         </div>
     </div>
+
+    <!-- GYMNASIEARBETE SAMMANFATTNING SEKTION -->
+    <section class="section-card">
+        <h2>Mitt Gymnasiearbete: VVS i Badrum</h2>
+        <div class="vvs-container">
+            <div class="vvs-text">
+                <p style="margin-bottom: 20px;">
+                    Mitt arbete fokuserar på praktiskt utförande av installationer i våtrum med fokus på branschregler för <strong>Säker Vatten</strong>.
+                </p>
+                
+                <div class="step-item">
+                    <strong>🚿 Installation & Rördragning</strong>
+                    Planering och montering av tappvattenrör och avloppssystem enligt ritning.
+                </div>
+                
+                <div class="step-item">
+                    <strong>🛡️ Tätskikt & Säkerhet</strong>
+                    Säkerställande av korrekta fallhöjder mot brunn och tätning av rörgenomföringar.
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <a href="gymnasiearbete.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">Läs hela projektbeskrivningen här →</a>
+                </div>
+            </div>
+
+            <div class="vvs-image-box">
+                <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" alt="Badrumsinstallation VVS">
+                <div style="padding: 10px; background: rgba(0,0,0,0.5); font-size: 0.85rem; text-align: center;">
+                    <em>Exempel på korrekt utförd badrumsinstallation.</em>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 
 <footer>
